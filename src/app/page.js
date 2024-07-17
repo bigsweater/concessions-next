@@ -2,7 +2,7 @@ import React from 'react'
 import Results, { LoadingResults } from '@/components/Results'
 import SearchForm, { LoadingSearchForm } from '@/components/SearchForm'
 import QueryStringProvider from '@/components/QueryStringProvider'
-import { fetchGenres, fetchMovies } from '@/utils/client';
+import { fetchGenres, fetchMovies } from '@/app/actions/client';
 import SearchClientProvider from '@/components/SearchClientProvider';
 
 export default async function Home({ searchParams }) {

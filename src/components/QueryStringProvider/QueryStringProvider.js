@@ -1,7 +1,7 @@
 'use client'
 import React from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { fetchMovies } from '@/utils/client';
+import { fetchMovies } from '@/app/actions/client';
 
 export const QueryStringContext = React.createContext()
 
