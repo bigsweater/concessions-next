@@ -1,6 +1,6 @@
 import React from 'react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
-import { QueryContext } from '../QueryProvider';
+import { QueryContext } from '@/components/QueryProvider';
 import Link from 'next/link';
 
 function Pagination() {
@@ -30,12 +30,12 @@ function Pagination() {
         )}
       </div>
       <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-        <div>
-          <p className="text-sm text-gray-700">
-            Showing page <span className="font-medium">{currentPage}</span> of{' '}
-            <span className="font-medium">{paginationContext.totalPages}</span> pages
-          </p>
-        </div>
+          <div>
+            <p className="text-sm text-gray-700">
+              Showing page <span className="font-medium">{currentPage}</span> of{' '}
+              <span className="font-medium">{paginationContext.totalPages}</span> pages
+            </p>
+          </div>
         <div>
           <nav aria-label="Pagination" className="isolate inline-flex -space-x-px rounded-md shadow-sm">
             {prevPage && (

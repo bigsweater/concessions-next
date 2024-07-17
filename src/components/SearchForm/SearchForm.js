@@ -10,8 +10,8 @@ function SearchForm({ initialGenres, initialGenre, initialSearch }) {
   const { updateQuery } = React.useContext(QueryContext)
 
   React.useEffect(() => {
-    updateQuery({ genre: currentGenre || '', search: currentSearch || '' })
-  }, [currentGenre, currentSearch])
+    updateQuery({ genre: currentGenre || '', search: deferredCurrentSearch || '' })
+  }, [currentGenre, deferredCurrentSearch])
 
   return (
     <form>
@@ -19,11 +19,24 @@ function SearchForm({ initialGenres, initialGenre, initialSearch }) {
         <div className="border-b border-gray-900/10 pb-12">
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
             <div className="col-span-full">
-              <h2>
-                <label htmlFor="search" className="text-base font-semibold leading-7 text-gray-900">
-                  Search
-                </label>
-              </h2>
+              <div className="flex gap-6">
+                <h2>
+                  <label htmlFor="search" className="text-base font-semibold leading-7 text-gray-900">
+                    Search
+                  </label>
+                </h2>
+
+                {currentSearch && (
+                  <button
+                    type="button"
+                    className="inline-flex items-center px-1 py-1 text-sm font-semibold text-indigo-600 hover:text-indigo-900 focus:ring-1 ring-inset ring-gray-300"
+                    onClick={() => setCurrentSearch('')}
+                  >
+                    <XMarkIcon aria-hidden="true" className="h-5 w-5 text-indigo-300 hover:text-indigo-900" />{" "}
+                    Clear
+                  </button>
+                )}
+              </div>
               <div className="mt-2">
                 <input
                   id="search"
@@ -31,7 +44,7 @@ function SearchForm({ initialGenres, initialGenre, initialSearch }) {
                   type="text"
                   autoComplete="off"
                   value={currentSearch}
-                  onChange={e => setCurrentSearch(e.target.value || '')}
+                  onChange={e => setCurrentSearch(e.target.value)}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
@@ -41,23 +54,23 @@ function SearchForm({ initialGenres, initialGenre, initialSearch }) {
 
         {initialGenres?.length && (
           <div className="border-b border-gray-900/10 pb-12">
-            <div className="flex gap-4 items-baseline">
-              <div>
-                <h2 className="text-base font-semibold leading-7 text-gray-900">Genres</h2>
-                <p className="mt-1 text-sm leading-6 text-gray-600">
-                  Select a genre to filter your results.
-                </p>
-              </div>
-
-              <button
-                type="button"
-                className="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                onClick={() => setCurrentGenre(null)}
-              >
-                Clear{" "}
-                <XMarkIcon aria-hidden="true" className="h-5 w-5 text-gray-400" />
-              </button>
+            <div className="flex gap-6">
+              <h2 className="text-base font-semibold leading-7 text-gray-900">Genres</h2>
+              {currentGenre && (
+                <button
+                  type="button"
+                  className="inline-flex items-center px-1 py-1 text-sm font-semibold text-indigo-600 hover:text-indigo-900 focus:ring-1 ring-inset ring-gray-300"
+                  onClick={() => setCurrentGenre(null)}
+                >
+                  <XMarkIcon aria-hidden="true" className="h-5 w-5 text-indigo-300 hover:text-indigo-900" />{" "}
+                  Clear
+                </button>
+              )}
             </div>
+
+            <p className="mt-1 text-sm leading-6 text-gray-600">
+              Select a genre to filter your results.
+            </p>
 
             <div className="mt-10 space-y-10">
               <ol className="mt-6 grid sm:grid-cols-2 gap-4">
