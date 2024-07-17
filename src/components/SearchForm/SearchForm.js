@@ -1,20 +1,28 @@
 'use client'
 import React from 'react';
-import { QueryContext } from '../QueryProvider';
-import { XMarkIcon } from '@heroicons/react/20/solid';
+import { QueryStringContext } from '@/components/QueryStringProvider';
+import { XMarkIcon } from '@heroicons/react/20/solid'
+import { debounce } from 'lodash'
 
 function SearchForm({ initialGenres, initialGenre, initialSearch }) {
+  const { updateQueryString } = React.useContext(QueryStringContext)
   const [currentGenre, setCurrentGenre] = React.useState(initialGenre)
   const [currentSearch, setCurrentSearch] = React.useState(initialSearch)
-  const deferredCurrentSearch = React.useDeferredValue(currentSearch)
-  const { updateQuery } = React.useContext(QueryContext)
+
+  const debouncedUpdateQueryString = React.useCallback(debounce(
+    updateQueryString,
+    200
+  ), [])
 
   React.useEffect(() => {
-    updateQuery({ genre: currentGenre || '', search: deferredCurrentSearch || '' })
-  }, [currentGenre, deferredCurrentSearch])
+    debouncedUpdateQueryString(new URLSearchParams({
+      genre: currentGenre || '',
+      search: currentSearch || '',
+    }), {scroll: false})
+  }, [currentGenre, currentSearch])
 
   return (
-    <form>
+    <form onSubmit={e => e.preventDefault()}>
       <div className="space-y-12">
         <div className="border-b border-gray-900/10 pb-12">
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
@@ -60,7 +68,7 @@ function SearchForm({ initialGenres, initialGenre, initialSearch }) {
                 <button
                   type="button"
                   className="inline-flex items-center px-1 py-1 text-sm font-semibold text-indigo-600 hover:text-indigo-900 focus:ring-1 ring-inset ring-gray-300"
-                  onClick={() => setCurrentGenre(null)}
+                  onClick={() => setCurrentGenre('')}
                 >
                   <XMarkIcon aria-hidden="true" className="h-5 w-5 text-indigo-300 hover:text-indigo-900" />{" "}
                   Clear
@@ -85,7 +93,7 @@ function SearchForm({ initialGenres, initialGenre, initialSearch }) {
                           className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
                           checked={currentGenre === genre.title}
                           value={genre.title}
-                          onChange={() => setCurrentGenre(genre.title)}
+                          onChange={(e) => setCurrentGenre(e.target.value)}
                         />
                       </div>
                       <div className="text-sm leading-6 flex-grow">
@@ -103,15 +111,6 @@ function SearchForm({ initialGenres, initialGenre, initialSearch }) {
             </div>
           </div>
         )}
-      </div>
-
-      <div className="mt-6 flex items-center justify-stretch gap-x-6">
-        <button
-          type="submit"
-          className="flex-grow rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-        >
-          Search
-        </button>
       </div>
     </form>
   );

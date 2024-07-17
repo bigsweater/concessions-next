@@ -1,10 +1,10 @@
 import React from 'react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
-import { QueryContext } from '@/components/QueryProvider';
+import { QueryStringContext } from '@/components/QueryStringProvider';
 import Link from 'next/link';
 
 function Pagination() {
-  const { pagination: paginationContext } = React.useContext(QueryContext)
+  const { pagination: paginationContext } = React.useContext(QueryStringContext)
   const currentPage = paginationContext.getCurrentPage()
   const prevPage = currentPage - 1 < 1 ? null : currentPage - 1
   const nextPage = currentPage + 1 > paginationContext.totalPages ? null : currentPage + 1

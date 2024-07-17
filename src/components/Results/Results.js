@@ -1,10 +1,10 @@
 'use client'
 import React from 'react';
 import Pagination from '@/components/Pagination'
-import { QueryContext } from '../QueryProvider';
+import { QueryStringContext } from '@/components/QueryStringProvider';
 
 function Results() {
-  const { movies } = React.useContext(QueryContext)
+  const { movies } = React.useContext(QueryStringContext)
 
   return (
     <div className="border-gray-200 bg-white shadow-sm rounded-lg overflow-hidden">

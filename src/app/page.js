@@ -1,8 +1,9 @@
 import React from 'react'
 import Results from '@/components/Results'
 import SearchForm from '@/components/SearchForm'
-import QueryProvider from '@/components/QueryProvider'
+import QueryStringProvider from '@/components/QueryStringProvider'
 import { fetchGenres, fetchMovies } from '@/utils/client';
+import SearchClientProvider from '@/components/SearchClientProvider';
 
 export default async function Home({ searchParams }) {
   let initialMovies = await fetchMovies(searchParams)
@@ -19,21 +20,23 @@ export default async function Home({ searchParams }) {
       </header>
       <main>
         <div className="mx-auto max-w-7xl px-4 py-6 lg:px-8">
-          <QueryProvider initialMovies={initialMovies.data}>
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-              <div className="sm:col-span-1">
-                <React.Suspense>
-                  <SearchForm initialGenres={genres.data} initialGenre={initialGenre} initialSearch={initialSearch} />
-                </React.Suspense>
-              </div>
+          <QueryStringProvider initialMovies={initialMovies.data}>
+            <SearchClientProvider>
+              <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+                <div className="sm:col-span-1">
+                  <React.Suspense>
+                    <SearchForm initialGenres={genres.data} initialGenre={initialGenre} initialSearch={initialSearch} />
+                  </React.Suspense>
+                </div>
 
-              <div className="md:col-span-2">
-                <React.Suspense>
-                  <Results initialMovies={initialMovies.data} />
-                </React.Suspense>
+                <div className="md:col-span-2">
+                  <React.Suspense>
+                    <Results initialMovies={initialMovies.data} />
+                  </React.Suspense>
+                </div>
               </div>
-            </div>
-          </QueryProvider>
+            </SearchClientProvider>
+          </QueryStringProvider>
         </div>
       </main>
     </>
