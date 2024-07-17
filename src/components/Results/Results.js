@@ -2,8 +2,9 @@
 import React from 'react';
 import Pagination from '@/components/Pagination'
 import { QueryStringContext } from '@/components/QueryStringProvider';
+import { range } from 'lodash'
 
-function Results() {
+export default function Results() {
   const { movies } = React.useContext(QueryStringContext)
 
   return (
@@ -40,4 +41,29 @@ function Results() {
   );
 }
 
-export default Results;
+export function LoadingResults() {
+  return (
+    <div className="border-gray-200 bg-white shadow-sm rounded-lg overflow-hidden">
+      <ul role="list" className="divide-y divide-gray-100 px-12 py-6 pb-0">
+        {range(1,10).map((movie) => (
+          <li key={movie} className="flex justify-between items-center gap-x-6 py-5 overflow-hidden">
+            <div className="flex min-w-0 gap-x-6">
+              <div className="flex-shrink-0 w-32 group -mt-6 -mb-6 overflow-hidden bg-gray-300">
+              </div>
+
+              <div className="min-w-0 flex-auto">
+                <h3 className="text-3xl font-semibold leading-10 text-gray-900"><span className="block w-full h-full bg-gray-400" /></h3>
+              </div>
+            </div>
+
+            <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
+              <p className="text-sm leading-6 bg-gray-200 rounded-full w-20 h-20"></p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+
+  )
+}
