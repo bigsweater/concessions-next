@@ -1,36 +1,22 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+I built this Movie API client with Next, Tailwind UI, and a splash of Lodash.
 
-## Getting Started
+## Things I like
 
-First, run the development server:
+I think the thing I'm most proud of here is using the URL as a central store of state. I wrote a `QueryStringProvider` that manages and updates query strings based on updated state from the search form.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+It was a really interesting problem! In most frontend work that I've done, the query string of the current URL is almost a side consideration. We normally update state in the application and ignore the URL, or at best, update it after the fact.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+I wanted to flip that on its head for this project, and use the URL to keep the app stateless. This enables you to link directly to a specific search results page. The back button also works!
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+I was also proud of my use of Server Actions. I've never used Next or Server Actions, and I'm impressed with how backend-focused it is. It's also pretty darn quick. I ran into a bunch of rough edges in the documentation, so this project took me longer than I wanted. But Server Actions work great.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Things I'd change
 
-## Learn More
+Given the time limit here, there's plenty I'd change.
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- I'd clean it up and refactor a lot. I suspect there are some unnecessary re-renders happening in there, and the `QueryStringProvider` is quite messy.
+- `QueryStringProvider` was an attempt at centralizing state management (without resorting to a third party package), and it works well enough, but there are some rough edges. For instance, the `SearchForm` component debounces input before sending results to `QueryStringProvider`. I'd like to *not* debounce the genre selection. But I found updating the `genre` and `search` params at different times caused the parameters to override one another. There's something wrong with my reconciliation logic.
+    - In retrospect, it would have been better to use a reducer.
+    - I ran into some issues with Next's `useSearchParams` hook and the way React serializes data on the frontend. So there's a lot of primitive object manipulation happening here, which feels pretty gross. I'd like to find a way around that.
+- I'd add a bit of whimsy! Tailwind UI is great, but this app is so bland.
+- I might even use another API (like IMDB) to decorate the movie results with additional data (like audience rating, descriptions, links to trailers, etc.).
