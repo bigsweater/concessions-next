@@ -28,7 +28,7 @@ export default async function Home({ searchParams }) {
               </div>
 
               <div className="md:col-span-2">
-                <React.Suspense fallback="LOADING....">
+                <React.Suspense fallback={<LoadingResults />}>
                   <Results initialResponse={initialMovies} />
                 </React.Suspense>
               </div>
