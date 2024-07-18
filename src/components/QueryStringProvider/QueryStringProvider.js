@@ -1,89 +1,70 @@
 'use client'
 import React from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { fetchMovies } from '@/app/actions/client';
+import { useSearchParams } from 'next/navigation';
 
 export const QueryStringContext = React.createContext()
 
-function QueryStringProvider({ children, initialMovies }) {
-  const searchParams = useSearchParams()
-  const router = useRouter()
-  const [movies, setMovies] = React.useState(initialMovies)
-  const [totalPages, setTotalPages] = React.useState(1)
+function QueryStringProvider({ children }) {
+  const searchParams = Object.fromEntries(useSearchParams())
+  const [updatedSearchParams, setUpdatedSearchParams] = React.useState(searchParams)
 
-  const updateQueryString = function (newParams, routerOptions) {
-    const currentParams = searchParams
-    const nextParams = cleanParams(mergeParams(currentParams, newParams))
+  const updateQueryString = function (newParams) {
+    const currentParams = { ...searchParams }
+    const nextParams = cleanParams(
+      mergeParams(currentParams, newParams)
+    )
 
     if (
       // If the user submits a query we should reset the page
-      currentParams.get('search') !== nextParams.get('search')
-      || currentParams.get('genre') !== nextParams.get('genre')
-      || Number(nextParams.get('page')) === 1
+      currentParams.search !== nextParams.search
+      || currentParams.genre !== nextParams.genre
+      || Number(nextParams.page) === 1
     ) {
-      nextParams.delete('page')
+      delete nextParams.page
     }
 
-    Array.from(nextParams.keys()).forEach(key => {
-      if (!Boolean(nextParams.get(key))) {
-        nextParams.delete(key)
-      }
-    })
-    mergeParams(searchParams, newParams)
+    setUpdatedSearchParams(nextParams)
+    const queryString = new URLSearchParams(nextParams).toString()
+    const url = queryString.length ? `?${queryString}` : '/'
 
-    const queryString = nextParams.toString().length ? `?${nextParams.toString()}` : ''
-    router.push(`/${queryString}`, routerOptions || {scroll: true})
+    window.history.pushState(null, '', url)
   }
 
-  function mergeParams(params1, params2) {
-    return new URLSearchParams({
-      ...Object.fromEntries(params1),
-      ...Object.fromEntries(params2)
-    })
+  function mergeParams(current, next) {
+    const merged = {
+      ...current,
+      ...next
+    }
+
+    return merged
   }
 
   function cleanParams(params) {
-    const cleaned = new URLSearchParams()
+    const cleaned = {}
 
-    params.forEach((value, key) => {
+    for (const [key, value] of Object.entries(params)) {
       if (Boolean(value)) {
-        cleaned.set(key, value)
+        cleaned[key] = value
       }
-    })
+    }
 
     return cleaned;
   }
 
   const getUrlForPage = React.useCallback((page) => {
-    const obj = Object.fromEntries(searchParams)
-    obj['page'] = page
+    const obj = { ...updatedSearchParams }
+    obj.page = page
     const params = new URLSearchParams(obj).toString()
-    
+
     return `?${params}`
-  }, [searchParams])
-
-  const getCurrentPage = React.useCallback(() => {
-    return Number(searchParams.get('page')) || 1
-  }, [searchParams])
-
-  React.useEffect(() => {
-    const fetchAndSetMovies = async (searchParams) => {
-      const res = await fetchMovies(Object.fromEntries(searchParams))
-      setMovies(res.data)
-      setTotalPages(res.totalPages || 1)
-    }
-    fetchAndSetMovies(searchParams)
-  }, [searchParams])
+  }, [updatedSearchParams])
 
   return (
     <QueryStringContext.Provider value={{
+      getUrlForPage,
+      searchParams,
       updateQueryString,
-      movies,
-      pagination: {
-        totalPages,
-        getUrlForPage,
-        getCurrentPage
-      }
+      updatedSearchParams,
     }}>
       {children}
     </QueryStringContext.Provider>

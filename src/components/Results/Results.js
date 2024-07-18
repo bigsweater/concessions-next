@@ -1,11 +1,27 @@
 'use client'
 import React from 'react';
 import Pagination from '@/components/Pagination'
-import { QueryStringContext } from '@/components/QueryStringProvider';
 import { range } from 'lodash'
+import { fetchMovies } from '@/app/actions/client';
+import { QueryStringContext } from '../QueryStringProvider';
 
-export default function Results() {
-  const { movies } = React.useContext(QueryStringContext)
+export default function Results({ initialResponse }) {
+  const {updatedSearchParams} = React.useContext(QueryStringContext)
+
+  const [movies, setMovies] = React.useState(initialResponse.data)
+  const [totalPages, setTotalPages] = React.useState(1)
+  const [currentPage, setCurrentPage] = React.useState(updatedSearchParams.page || 1)
+
+  React.useEffect(() => {
+    const updateMovies = async () => {
+      const nextMovies = await fetchMovies(updatedSearchParams)
+      setMovies(nextMovies.data)
+      setTotalPages(nextMovies.totalPages)
+      setCurrentPage(updatedSearchParams.page || 1)
+    }
+
+    updateMovies()
+  }, [updatedSearchParams])
 
   return (
     <div className="border-gray-200 bg-white shadow-sm rounded-lg overflow-hidden">
@@ -36,7 +52,7 @@ export default function Results() {
         </div>
       )}
 
-      <Pagination />
+      <Pagination totalPages={totalPages} currentPage={currentPage} />
     </div>
   );
 }

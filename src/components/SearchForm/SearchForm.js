@@ -15,10 +15,10 @@ export default function SearchForm({ initialGenres, initialGenre, initialSearch 
   ), [])
 
   React.useEffect(() => {
-    debouncedUpdateQueryString(new URLSearchParams({
+    debouncedUpdateQueryString({
       genre: currentGenre || '',
       search: currentSearch || '',
-    }), { scroll: false })
+    }, { scroll: false })
   }, [currentGenre, currentSearch])
 
   return (

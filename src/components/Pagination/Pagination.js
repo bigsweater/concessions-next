@@ -3,18 +3,20 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
 import { QueryStringContext } from '@/components/QueryStringProvider';
 import Link from 'next/link';
 
-function Pagination() {
-  const { pagination: paginationContext } = React.useContext(QueryStringContext)
-  const currentPage = paginationContext.getCurrentPage()
+function Pagination({ totalPages }) {
+  const { searchParams, getUrlForPage } = React.useContext(QueryStringContext)
+
+  const currentPage = Number(searchParams.page) || 1
+
   const prevPage = currentPage - 1 < 1 ? null : currentPage - 1
-  const nextPage = currentPage + 1 > paginationContext.totalPages ? null : currentPage + 1
+  const nextPage =  currentPage + 1 > totalPages ? null : currentPage + 1
 
   return (
     <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
       <div className="flex flex-1 justify-between sm:hidden">
         {prevPage && (
           <Link
-            href={paginationContext.getUrlForPage(prevPage)}
+            href={getUrlForPage(prevPage)}
             className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
           >
             Previous
@@ -22,7 +24,7 @@ function Pagination() {
         )}
         {nextPage && (
           <Link
-            href={paginationContext.getUrlForPage(nextPage)}
+            href={getUrlForPage(nextPage)}
             className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
           >
             Next
@@ -33,14 +35,14 @@ function Pagination() {
           <div>
             <p className="text-sm text-gray-700">
               Showing page <span className="font-medium">{currentPage}</span> of{' '}
-              <span className="font-medium">{paginationContext.totalPages}</span> pages
+              <span className="font-medium">{totalPages}</span> pages
             </p>
           </div>
         <div>
           <nav aria-label="Pagination" className="isolate inline-flex -space-x-px rounded-md shadow-sm">
             {prevPage && (
               <Link
-                href={paginationContext.getUrlForPage(prevPage)}
+                href={getUrlForPage(prevPage)}
                 className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
               >
                 <span className="sr-only">Previous</span>
@@ -50,7 +52,7 @@ function Pagination() {
 
             {nextPage && (
               <Link
-                href={paginationContext.getUrlForPage(nextPage)}
+                href={getUrlForPage(nextPage)}
                 className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
               >
                 <span className="sr-only">Next</span>

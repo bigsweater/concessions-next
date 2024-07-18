@@ -3,7 +3,6 @@ import Results, { LoadingResults } from '@/components/Results'
 import SearchForm, { LoadingSearchForm } from '@/components/SearchForm'
 import QueryStringProvider from '@/components/QueryStringProvider'
 import { fetchGenres, fetchMovies } from '@/app/actions/client';
-import SearchClientProvider from '@/components/SearchClientProvider';
 
 export default async function Home({ searchParams }) {
   let initialMovies = await fetchMovies(searchParams)
@@ -20,22 +19,20 @@ export default async function Home({ searchParams }) {
       </header>
       <main>
         <div className="mx-auto max-w-7xl px-4 py-6 lg:px-8">
-          <QueryStringProvider initialMovies={initialMovies.data}>
-            <SearchClientProvider>
-              <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-                <div className="sm:col-span-1">
-                  <React.Suspense fallback={<LoadingSearchForm />}>
-                    <SearchForm initialGenres={genres.data} initialGenre={initialGenre} initialSearch={initialSearch} />
-                  </React.Suspense>
-                </div>
-
-                <div className="md:col-span-2">
-                  <React.Suspense fallback={<LoadingResults />}>
-                    <Results initialMovies={initialMovies.data} />
-                  </React.Suspense>
-                </div>
+          <QueryStringProvider>
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+              <div className="sm:col-span-1">
+                <React.Suspense fallback={<LoadingSearchForm />}>
+                  <SearchForm initialGenres={genres.data} initialGenre={initialGenre} initialSearch={initialSearch} />
+                </React.Suspense>
               </div>
-            </SearchClientProvider>
+
+              <div className="md:col-span-2">
+                <React.Suspense fallback="LOADING....">
+                  <Results initialResponse={initialMovies} />
+                </React.Suspense>
+              </div>
+            </div>
           </QueryStringProvider>
         </div>
       </main>
