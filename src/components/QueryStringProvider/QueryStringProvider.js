@@ -1,12 +1,13 @@
 'use client'
 import React from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 export const QueryStringContext = React.createContext()
 
 function QueryStringProvider({ children }) {
   const searchParams = Object.fromEntries(useSearchParams())
   const [updatedSearchParams, setUpdatedSearchParams] = React.useState(searchParams)
+  const router = useRouter()
 
   const updateQueryString = function (newParams) {
     const currentParams = { ...searchParams }
@@ -18,7 +19,7 @@ function QueryStringProvider({ children }) {
       // If the user submits a query we should reset the page
       currentParams.search !== nextParams.search
       || currentParams.genre !== nextParams.genre
-      || Number(nextParams.page) === 1
+      || Number(currentParams.page) === 1
     ) {
       delete nextParams.page
     }
@@ -27,7 +28,7 @@ function QueryStringProvider({ children }) {
     const queryString = new URLSearchParams(nextParams).toString()
     const url = queryString.length ? `?${queryString}` : '/'
 
-    window.history.pushState(null, '', url)
+    router.push(url, {scroll: false })
   }
 
   function mergeParams(current, next) {
