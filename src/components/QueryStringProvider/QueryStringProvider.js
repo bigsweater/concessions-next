@@ -28,7 +28,7 @@ function QueryStringProvider({ children }) {
     const queryString = new URLSearchParams(nextParams).toString()
     const url = queryString.length ? `?${queryString}` : '/'
 
-    router.push(url, {scroll: false })
+    window.history.pushState(null, '', url)
   }
 
   function mergeParams(current, next) {
@@ -65,7 +65,6 @@ function QueryStringProvider({ children }) {
       getUrlForPage,
       searchParams,
       updateQueryString,
-      updatedSearchParams,
     }}>
       {children}
     </QueryStringContext.Provider>

@@ -6,22 +6,20 @@ import { fetchMovies } from '@/app/actions/client';
 import { QueryStringContext } from '../QueryStringProvider';
 
 export default function Results({ initialResponse }) {
-  const {updatedSearchParams} = React.useContext(QueryStringContext)
+  const {searchParams} = React.useContext(QueryStringContext)
 
   const [movies, setMovies] = React.useState(initialResponse.data)
   const [totalPages, setTotalPages] = React.useState(1)
-  const [currentPage, setCurrentPage] = React.useState(updatedSearchParams.page || 1)
 
   React.useEffect(() => {
     const updateMovies = async () => {
-      const nextMovies = await fetchMovies(updatedSearchParams)
+      const nextMovies = await fetchMovies(searchParams)
       setMovies(nextMovies.data)
       setTotalPages(nextMovies.totalPages)
-      setCurrentPage(updatedSearchParams.page || 1)
     }
 
     updateMovies()
-  }, [updatedSearchParams])
+  }, [searchParams])
 
   return (
     <div className="border-gray-200 bg-white shadow-sm rounded-lg overflow-hidden">
@@ -52,7 +50,7 @@ export default function Results({ initialResponse }) {
         </div>
       )}
 
-      <Pagination totalPages={totalPages} currentPage={currentPage} />
+      <Pagination totalPages={totalPages} />
     </div>
   );
 }
