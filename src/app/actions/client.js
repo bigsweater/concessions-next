@@ -34,7 +34,7 @@ export const fetchMovies = async function (params) {
 
 export const fetchGenres = React.cache(async function () {
 	const client = await getClient();
-	const res = await client('/genres/movies')
+	const res = await client('/genres/movies', { limit: 1000 })
 	const json = await res.json()
 
 	return json
