@@ -14,16 +14,19 @@ It was a really interesting problem! It's probably not "good" -- or at least con
 
 I wanted to flip that on its head for this project, and use the URL to keep the app stateless. This enables you to link directly to a specific search results page (for instance: [Genre: Family, Page: 2](https://concessions-next.vercel.app/?genre=Family&page=2)). The back button also works!
 
-I was also proud of my use of Server Actions. I've never used Next or Server Actions, and I'm impressed with how backend-focused it is. It's also pretty darn quick. I ran into a bunch of rough edges in the documentation, so this project took me longer than I wanted. But Server Actions work great.
+The UI and URL update instantly, but the fetch calls are debounced.
+
+I was also happy with my first use of Server Actions. I've never used Next or Server Actions, and I'm impressed with how backend-focused it is. It's also pretty darn quick. I ran into a bunch of rough edges in the documentation, so this project took me longer than I wanted. But Server Actions work great.
 
 ## Things I'd change
 
 Given the time limit here, there's plenty I'd change.
 
 - Tests! Need to write tests.
+- There's no sanitation/validation of any of the inputs. That would be important in a real app.
+- The URL currently updates *as you type* into the search bar. This keeps state synced up nicely, but it creates a lot of history states. I'd like to figure out a way to use the URL as a single source of truth for search state, *but* avoid pushing to history too frequently.
 - I'd clean it up and refactor a lot. There are some unnecessary re-renders happening in there, and the `QueryStringProvider` is quite messy.
-- `QueryStringProvider` was an attempt at centralizing state management (without resorting to a third party package), and it works well enough, but there are some rough edges. For instance, the `SearchForm` component debounces input before sending results to `QueryStringProvider`. I'd like to *not* debounce the genre selection. But I found updating the `genre` and `search` params at different times caused them to override one another. There's something wrong with my reconciliation logic.
     - In retrospect, it would have been better to use a reducer. A state machine would make this code much clearer.
-    - I ran into some issues with Next's `useSearchParams` hook and the way React serializes data on the frontend. So there's a lot of primitive object manipulation happening here, which feels pretty gross. I'd like to find a way around that.
+    - I ran into some issues with Next's `useSearchParams` hook and the way React serializes data on the frontend. So there's a lot of object manipulation happening here, which feels pretty gross. I'd like to find a way around that.
 - I'd make sure Suspense boundaries are working. There's some funny business going on with Suspense...couldn't get loading states to show, despite having built with Server Actions and wrapped them in Suspense components. I think it's because Next is treating URL updates like full navigation events?
 - I'd add a bit of whimsy! Tailwind UI is great, but this app is so bland.
