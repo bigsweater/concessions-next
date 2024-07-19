@@ -6,8 +6,8 @@ import { debounce, range } from 'lodash'
 
 export default function SearchForm({ initialGenres, initialGenre, initialSearch }) {
   const { updateQueryString } = React.useContext(QueryStringContext)
-  const [currentGenre, setCurrentGenre] = React.useState(initialGenre)
-  const [currentSearch, setCurrentSearch] = React.useState(initialSearch)
+  const [currentGenre, setCurrentGenre] = React.useState(initialGenre || '')
+  const [currentSearch, setCurrentSearch] = React.useState(initialSearch || '')
 
   const debouncedUpdateQueryString = React.useCallback(debounce(
     updateQueryString,

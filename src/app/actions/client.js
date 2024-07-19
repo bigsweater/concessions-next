@@ -24,10 +24,28 @@ export const getClient = React.cache(async function () {
 	}
 })
 
+const fetchMovie = React.cache(async function (movieId) {
+	const client = await getClient()
+	const res = await client(`/movies/${movieId}`)
+	const json = await res.json()
+
+	return json
+})
+
 export const fetchMovies = async function (params) {
 	const client = await getClient();
 	const res = await client('/movies', { limit: 10, ...params })
 	const json = await res.json()
+	const decoratedMovies = json.data.map(async movie => {
+		if (!movie.id) return movie
+		const decoratedMovie = await fetchMovie(movie.id)
+		return {
+			...movie,
+			...decoratedMovie
+		}
+	})
+
+	json.data = decoratedMovies
 
 	return json
 }

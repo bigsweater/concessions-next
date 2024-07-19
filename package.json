@@ -11,6 +11,7 @@
   "dependencies": {
     "@headlessui/react": "^2.1.2",
     "@heroicons/react": "^2.1.5",
+    "@musement/iso-duration": "^1.0.0",
     "@tailwindcss/forms": "^0.5.7",
     "lodash": "^4.17.21",
     "next": "14.2.5",
