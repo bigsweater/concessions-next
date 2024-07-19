@@ -16,8 +16,8 @@ export default function Results({ initialResponse }) {
   React.useEffect(() => {
     const updateMovies = async () => {
       const nextMovies = await fetchMovies(searchParams)
-      // Using nested server actions (fetchMovies > fetchMovie)
-      // results in a list of promises for some reason, even after using await. 
+      // Server actions that call server actions end up with Promises, even
+      // after `await`-ing the Action. Unwrapping them here.
       Promise.all(nextMovies.data)
         .then(values => nextMovies.data = values)
         .then(() => {
@@ -33,8 +33,8 @@ export default function Results({ initialResponse }) {
     <div className="border-gray-200 bg-white shadow-sm rounded-lg overflow-hidden">
       {movies?.length ? (
         <ul role="list" className="divide-y divide-gray-100 px-12 py-6 pb-0">
-          {movies.map((movie) => (
-            <li key={movie.id} className="flex justify-between items-center gap-x-6 py-5 overflow-hidden">
+          {movies.map((movie, index) => (
+            <li key={movie.id || `movie-${index}`} className="flex justify-between items-center gap-x-6 py-5 overflow-hidden">
               <MovieDetails movie={movie} />
             </li>
           ))}
