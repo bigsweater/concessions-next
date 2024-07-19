@@ -1,11 +1,11 @@
 'use client'
 import React from 'react';
-import { range } from 'lodash'
+import { range, debounce } from 'lodash'
 
 import  MovieDetails from '@/components/MovieDetails'
 import Pagination from '@/components/Pagination'
-import { fetchMovies } from '@/app/actions/client';
 import { QueryStringContext } from '@/components/QueryStringProvider';
+import { fetchMovies } from '@/app/actions/client';
 
 export default function Results({ initialResponse }) {
   const {searchParams} = React.useContext(QueryStringContext)
@@ -14,7 +14,7 @@ export default function Results({ initialResponse }) {
   const [totalPages, setTotalPages] = React.useState(1)
 
   React.useEffect(() => {
-    const updateMovies = async () => {
+    const updateMovies = debounce(async () => {
       const nextMovies = await fetchMovies(searchParams)
       // Server actions that call server actions end up with Promises, even
       // after `await`-ing the Action. Unwrapping them here.
@@ -24,7 +24,7 @@ export default function Results({ initialResponse }) {
           setMovies(nextMovies.data)
           setTotalPages(nextMovies.totalPages)
         })
-    }
+    }, 200)
 
     updateMovies()
   }, [searchParams])

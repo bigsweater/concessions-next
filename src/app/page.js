@@ -7,8 +7,6 @@ import { fetchGenres, fetchMovies } from '@/app/actions/client';
 export default async function Home({ searchParams }) {
   let initialMovies = await fetchMovies(searchParams)
   const genres = await fetchGenres()
-  const initialGenre = searchParams.genre
-  const initialSearch = searchParams.search
 
   return (
     <>
@@ -23,7 +21,7 @@ export default async function Home({ searchParams }) {
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
               <div className="sm:col-span-1">
                 <React.Suspense fallback={<LoadingSearchForm />}>
-                  <SearchForm initialGenres={genres.data} initialGenre={initialGenre} initialSearch={initialSearch} />
+                  <SearchForm initialGenres={genres.data} />
                 </React.Suspense>
               </div>
 

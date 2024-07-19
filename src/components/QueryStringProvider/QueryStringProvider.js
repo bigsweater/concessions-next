@@ -1,13 +1,12 @@
 'use client'
 import React from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 
 export const QueryStringContext = React.createContext()
 
 function QueryStringProvider({ children }) {
   const searchParams = Object.fromEntries(useSearchParams())
   const [updatedSearchParams, setUpdatedSearchParams] = React.useState(searchParams)
-  const router = useRouter()
 
   const updateQueryString = function (newParams) {
     const currentParams = { ...searchParams }
